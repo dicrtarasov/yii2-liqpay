@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 11:36:43
+ * @version 06.07.20 12:20:53
  */
 
 declare(strict_types = 1);
@@ -126,6 +126,9 @@ interface LiqPay
 
     /** @var string успешный платеж */
     public const STATUS_SUCCESS = 'success';
+
+    /** @var string Неуспешный платеж. Некорректно заполнены данные */
+    public const STATUS_ERROR = 'error';
 
     /** @var string Неуспешный платеж */
     public const STATUS_FAILURE = 'failure';
