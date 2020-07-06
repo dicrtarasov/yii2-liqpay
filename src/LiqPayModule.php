@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 12:45:23
+ * @version 06.07.20 13:02:11
  */
 
 declare(strict_types = 1);
@@ -23,6 +23,7 @@ use function sha1;
  * Модуль LiqPay.
  *
  * @noinspection PhpUnused
+ * @link Тестовые карты https://www.liqpay.ua/documentation/api/sandbox
  */
 class LiqPayModule extends Module implements LiqPay
 {
