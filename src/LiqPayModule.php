@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 11:53:36
+ * @version 06.07.20 12:30:11
  */
 
 declare(strict_types = 1);
@@ -114,7 +114,7 @@ class LiqPayModule extends Module implements LiqPay
      * @return CheckoutRequest
      * @throws InvalidConfigException
      */
-    public function checkout(array $config = [])
+    public function checkoutRequest(array $config = [])
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Yii::createObject(array_merge($this->checkoutConfig, $config), [$this]);
