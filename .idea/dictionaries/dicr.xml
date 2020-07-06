@@ -1,7 +1,10 @@
 <component name="ProjectDictionaryState">
   <dictionary name="dicr">
     <words>
+      <w>boolval</w>
+      <w>csrf</w>
       <w>dicr</w>
+      <w>floatval</w>
       <w>liqpay</w>
       <w>masterpass</w>
       <w>momentpart</w>
