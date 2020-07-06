@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 12:30:11
+ * @version 06.07.20 12:45:23
  */
 
 declare(strict_types = 1);
@@ -104,7 +104,7 @@ class LiqPayModule extends Module implements LiqPay
      */
     public function signData(string $data)
     {
-        return base64_encode(sha1($this->privateKey . $data . $this->privateKey, 1));
+        return base64_encode(sha1($this->privateKey . $data . $this->privateKey, true));
     }
 
     /**
