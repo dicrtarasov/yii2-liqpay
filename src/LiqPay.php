@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 12:20:53
+ * @version 06.07.20 13:00:37
  */
 
 declare(strict_types = 1);
@@ -135,6 +135,9 @@ interface LiqPay
 
     /** @var string Платеж возвращен */
     public const STATUS_REVERSED = 'reversed';
+
+    /** @var string Тестовый платеж */
+    public const STATUS_SANDBOX = 'sandbox';
 
     // todo: остальные статусы: https://www.liqpay.ua/documentation/api/callback
 }
