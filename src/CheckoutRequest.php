@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 11:45:06
+ * @version 06.07.20 12:42:00
  */
 
 /** @noinspection PhpUnused */
@@ -127,11 +127,14 @@ class CheckoutRequest extends Model implements LiqPay
             ['currency', 'required'],
             ['currency', 'in', 'range' => self::CURRENCIES],
 
-            [['description', 'orderId'], 'required'],
-            [['description', 'orderId'], 'string'],
+            ['description', 'trim'],
+            ['description', 'required'],
 
+            ['orderId', 'trim'],
+            ['orderId', 'required'],
+
+            ['customerId', 'trim'],
             ['customerId', 'default'],
-            ['customerId', 'string'],
 
             ['expiredDate', 'default'],
             ['expiredDate', 'date', 'format' => 'php:Y-m-d H:i:s'],
