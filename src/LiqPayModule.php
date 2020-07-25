@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 13:02:11
+ * @version 26.07.20 04:13:26
  */
 
 declare(strict_types = 1);
@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\Url;
+use yii\web\Application;
 use function array_filter;
 use function array_map;
 use function array_merge;
@@ -23,7 +24,6 @@ use function sha1;
  * Модуль LiqPay.
  *
  * @noinspection PhpUnused
- * @link Тестовые карты https://www.liqpay.ua/documentation/api/sandbox
  */
 class LiqPayModule extends Module implements LiqPay
 {
@@ -62,8 +62,10 @@ class LiqPayModule extends Module implements LiqPay
 
         $this->checkoutConfig = array_merge([
             'class' => CheckoutRequest::class,
-            'callbackUrl' => Url::to(['/' . $this->uniqueId . '/checkout'], true),
-            'returnUrl' => Url::to(Yii::$app->homeUrl, true)
+            'callbackUrl' => Yii::$app instanceof Application ?
+                Url::to(['/' . $this->uniqueId . '/checkout'], true) : null,
+            'returnUrl' => Yii::$app instanceof Application ?
+                Url::to(Yii::$app->homeUrl, true) : null
         ], $this->checkoutConfig ?: []);
 
         if (! empty($this->checkoutHandler) && ! is_callable($this->checkoutHandler)) {
