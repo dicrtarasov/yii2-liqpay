@@ -23,9 +23,6 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": [
-        {"type": "composer", "url": "https://asset-packagist.org"}
-    ],
     "require": {
         "php": "~7.2",
         "ext-json": "*",
@@ -33,5 +30,8 @@
     },
     "require-dev": {
         "roave/security-advisories": "dev-master"
-    }
+    },
+    "repositories": [
+        {"type": "composer", "url": "https://asset-packagist.org"}
+    ]
 }

@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\Url;
 use yii\web\Application;
+
 use function array_filter;
 use function array_map;
 use function array_merge;
@@ -22,12 +23,10 @@ use function sha1;
 
 /**
  * Модуль LiqPay.
- *
- * @noinspection PhpUnused
  */
 class LiqPayModule extends Module implements LiqPay
 {
-    /** @var string */
+    /** @inheritDoc */
     public $controllerNamespace = __NAMESPACE__;
 
     /** @var string */
@@ -46,7 +45,7 @@ class LiqPayModule extends Module implements LiqPay
      * @inheritDoc
      * @throws InvalidConfigException
      */
-    public function init()
+    public function init() : void
     {
         parent::init();
 
@@ -79,15 +78,15 @@ class LiqPayModule extends Module implements LiqPay
      * @param array $data
      * @return string
      */
-    public function encodeData(array $data)
+    public function encodeData(array $data) : string
     {
         // конвертируем значения в строки
-        $data = array_map(static function($val) {
+        $data = array_map(static function ($val) : string {
             return trim((string)$val);
         }, $data);
 
         // фильтруем пустые значения
-        $data = array_filter($data, static function(string $val) {
+        $data = array_filter($data, static function (string $val) : bool {
             return $val !== '';
         });
 
@@ -105,7 +104,7 @@ class LiqPayModule extends Module implements LiqPay
      * @return string
      * @link https://www.liqpay.ua/documentation/data_signature
      */
-    public function signData(string $data)
+    public function signData(string $data) : string
     {
         return base64_encode(sha1($this->privateKey . $data . $this->privateKey, true));
     }
@@ -115,11 +114,9 @@ class LiqPayModule extends Module implements LiqPay
      *
      * @param array $config
      * @return CheckoutRequest
-     * @throws InvalidConfigException
      */
-    public function checkoutRequest(array $config = [])
+    public function checkoutRequest(array $config = []) : CheckoutRequest
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return Yii::createObject(array_merge($this->checkoutConfig, $config), [$this]);
+        return new CheckoutRequest($this, array_merge($this->checkoutConfig, $config));
     }
 }

@@ -30,7 +30,7 @@ class CheckoutResponse extends Model implements LiqPay
     /**
      * @return string
      */
-    public function formName()
+    public function formName() : string
     {
         return '';
     }
@@ -38,7 +38,7 @@ class CheckoutResponse extends Model implements LiqPay
     /**
      * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         // нужно перечислить safe, которые будут загружаться
         return [

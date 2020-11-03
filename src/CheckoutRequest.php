@@ -4,18 +4,18 @@
  * @version 06.07.20 12:42:00
  */
 
-/** @noinspection PhpUnused */
 declare(strict_types = 1);
 
 namespace dicr\liqpay;
 
+use Throwable;
 use Yii;
 use yii\base\Exception;
-use yii\base\ExitException;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
+
 use function array_keys;
 use function file_get_contents;
 use function http_build_query;
@@ -105,7 +105,7 @@ class CheckoutRequest extends Model implements LiqPay
     /**
      * @inheritDoc
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             ['version', 'default', 'value' => self::VERSION],
@@ -158,7 +158,7 @@ class CheckoutRequest extends Model implements LiqPay
      * @return array
      * @throws InvalidConfigException
      */
-    protected function values()
+    protected function values() : array
     {
         if (! $this->validate()) {
             $attr = array_keys($this->firstErrors)[0];
@@ -188,9 +188,8 @@ class CheckoutRequest extends Model implements LiqPay
      * Статус операции будет отправлен на callbackUrl.
      *
      * @throws InvalidConfigException
-     * @throws ExitException
      */
-    public function processClient()
+    public function processClient() : void
     {
         $data = $this->module->encodeData($this->values());
         $signature = $this->module->signData($data);
@@ -229,7 +228,13 @@ class CheckoutRequest extends Model implements LiqPay
         // отправляем ответ
         Yii::$app->response->content = ob_get_clean();
         Yii::$app->response->statusCode = 200;
-        Yii::$app->end(0, Yii::$app->response);
+
+        try {
+            Yii::$app->end(0, Yii::$app->response);
+        } catch (Throwable $ex) {
+            Yii::error($ex, __METHOD__);
+            exit;
+        }
     }
 
     /**
@@ -239,7 +244,7 @@ class CheckoutRequest extends Model implements LiqPay
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function processApi()
+    public function processApi() : CheckoutResponse
     {
         $data = $this->module->encodeData($this->values());
         $signature = $this->module->signData($data);
@@ -280,6 +285,7 @@ class CheckoutRequest extends Model implements LiqPay
 
         // устанавливаем через setAttributes с safe = true
         $response->attributes = $json;
+
         return $response;
     }
 }

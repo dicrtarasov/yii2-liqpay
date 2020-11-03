@@ -4,7 +4,6 @@
  * @version 06.07.20 11:48:53
  */
 
-/** @noinspection PhpUnused */
 declare(strict_types = 1);
 
 namespace dicr\liqpay;
@@ -23,7 +22,10 @@ use function json_decode;
  */
 class CheckoutController extends Controller
 {
-    /** @var bool LiqPay отправляет запросы без CSRF */
+    /**
+     * {@inheritDoc}
+     * LiqPay отправляет запросы без CSRF
+     */
     public $enableCsrfValidation = false;
 
     /**
@@ -31,7 +33,7 @@ class CheckoutController extends Controller
      *
      * @throws BadRequestHttpException
      */
-    public function actionIndex()
+    public function actionIndex() : void
     {
         // получаем данные
         $data = Yii::$app->request->post('data');
