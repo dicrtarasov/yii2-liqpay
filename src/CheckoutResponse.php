@@ -1,7 +1,9 @@
 <?php
-/**
+/*
+ * @copyright 2019-2020 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 11:52:09
+ * @license MIT
+ * @version 10.11.20 02:35:10
  */
 
 declare(strict_types = 1);

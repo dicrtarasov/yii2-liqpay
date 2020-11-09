@@ -31,13 +31,15 @@
     "require": {
         "php": "~7.3",
         "ext-json": "*",
-        "yiisoft/yii2": "~2.0"
+        "yiisoft/yii2": "~2.0",
+        "dicr/yii2-validate": "~2.2"
     },
     "require-dev": {
         "phpunit/phpunit": "9.4",
         "roave/security-advisories": "dev-master"
     },
     "repositories": [
+        {"type": "git", "url": "https://gitlab.com/dicr/yii2-validate.git"},
         {"type": "composer", "url": "https://asset-packagist.org"}
     ]
 }

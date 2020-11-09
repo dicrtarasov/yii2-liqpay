@@ -1,17 +1,19 @@
 <?php
-/**
+/*
+ * @copyright 2019-2020 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 06.07.20 12:42:00
+ * @license MIT
+ * @version 10.11.20 02:59:23
  */
 
 declare(strict_types = 1);
 
 namespace dicr\liqpay;
 
+use dicr\validate\ValidateException;
 use Throwable;
 use Yii;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
@@ -84,9 +86,6 @@ class CheckoutRequest extends Model implements LiqPay
      */
     public $verifyCode = false;
 
-    /** @var bool режим отладки */
-    public $debug = false;
-
     // @todo реализовать остальные параметры
 
     /**
@@ -145,10 +144,6 @@ class CheckoutRequest extends Model implements LiqPay
             ['verifyCode', 'default', 'value' => false],
             ['verifyCode', 'boolean'],
             ['verifyCode', 'filter', 'filter' => 'boolval'],
-
-            ['debug', 'default', 'value' => false],
-            ['debug', 'boolean'],
-            ['debug', 'filter', 'filter' => 'boolval'],
         ];
     }
 
@@ -156,13 +151,12 @@ class CheckoutRequest extends Model implements LiqPay
      * Возвращает данные.
      *
      * @return array
-     * @throws InvalidConfigException
+     * @throws ValidateException
      */
-    protected function values() : array
+    private function values() : array
     {
         if (! $this->validate()) {
-            $attr = array_keys($this->firstErrors)[0];
-            throw new InvalidConfigException($attr . ': ' . $this->getFirstError($attr));
+            throw new ValidateException($this);
         }
 
         return [
@@ -179,7 +173,7 @@ class CheckoutRequest extends Model implements LiqPay
             'expired_date' => $this->expiredDate,
             'paytypes' => implode(' ', $this->paytypes),
             'verifycode' => $this->verifyCode ? 'Y' : '',
-            'sandbox' => $this->debug ? 1 : ''
+            'sandbox' => $this->module->debug ? 1 : ''
         ];
     }
 
@@ -187,9 +181,9 @@ class CheckoutRequest extends Model implements LiqPay
      * Обработка методом переадресации клиента на страницу оплаты.
      * Статус операции будет отправлен на callbackUrl.
      *
-     * @throws InvalidConfigException
+     * @throws ValidateException
      */
-    public function processClient() : void
+    public function redirect() : void
     {
         $data = $this->module->encodeData($this->values());
         $signature = $this->module->signData($data);
@@ -224,7 +218,6 @@ class CheckoutRequest extends Model implements LiqPay
         </body>
         </html>
         <?php
-
         // отправляем ответ
         Yii::$app->response->content = ob_get_clean();
         Yii::$app->response->statusCode = 200;
@@ -242,9 +235,8 @@ class CheckoutRequest extends Model implements LiqPay
      *
      * @return CheckoutResponse
      * @throws Exception
-     * @throws InvalidConfigException
      */
-    public function processApi() : CheckoutResponse
+    public function send() : CheckoutResponse
     {
         $data = $this->module->encodeData($this->values());
         $signature = $this->module->signData($data);
@@ -284,7 +276,7 @@ class CheckoutRequest extends Model implements LiqPay
         $response = new CheckoutResponse();
 
         // устанавливаем через setAttributes с safe = true
-        $response->attributes = $json;
+        $response->setAttributes($json, false);
 
         return $response;
     }

@@ -1,7 +1,9 @@
 <?php
-/**
+/*
+ * @copyright 2019-2020 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
- * @version 26.07.20 04:13:26
+ * @license MIT
+ * @version 10.11.20 02:56:28
  */
 
 declare(strict_types = 1);
@@ -43,6 +45,9 @@ class LiqPayModule extends Module implements LiqPay
     /** @var callable function(CheckoutResponse $response) */
     public $checkoutHandler;
 
+    /** @var bool режим отладки */
+    public $debug;
+
     /**
      * @inheritDoc
      * @throws InvalidConfigException
@@ -60,14 +65,6 @@ class LiqPayModule extends Module implements LiqPay
         if (empty($this->privateKey)) {
             throw new InvalidConfigException('privateKey');
         }
-
-        $this->checkoutConfig = array_merge([
-            'class' => CheckoutRequest::class,
-            'callbackUrl' => Yii::$app instanceof Application ?
-                Url::to(['/' . $this->uniqueId . '/checkout'], true) : null,
-            'returnUrl' => Yii::$app instanceof Application ?
-                Url::to(Yii::$app->homeUrl, true) : null
-        ], $this->checkoutConfig ?: []);
 
         if (! empty($this->checkoutHandler) && ! is_callable($this->checkoutHandler)) {
             throw new InvalidConfigException('checkoutHandler');
@@ -119,6 +116,11 @@ class LiqPayModule extends Module implements LiqPay
      */
     public function checkoutRequest(array $config = []) : CheckoutRequest
     {
-        return new CheckoutRequest($this, array_merge($this->checkoutConfig, $config));
+        return new CheckoutRequest($this, array_merge([
+            'callbackUrl' => Yii::$app instanceof Application ?
+                Url::to(['/' . $this->uniqueId . '/checkout'], true) : null,
+            'returnUrl' => Yii::$app instanceof Application ?
+                Url::to(Yii::$app->homeUrl, true) : null
+        ], $this->checkoutConfig ?: [], $config));
     }
 }

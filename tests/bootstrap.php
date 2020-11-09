@@ -3,7 +3,7 @@
  * @copyright 2019-2020 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 05.11.20 05:44:22
+ * @version 10.11.20 02:59:23
  */
 
 /** @noinspection PhpUnhandledExceptionInspection */
@@ -29,8 +29,11 @@ new yii\console\Application([
         ]
     ],
     'modules' => [
-        'liqpay' => dicr\liqpay\LiqPayModule::class,
-        'publicKey' => 'xxxxxx',
-        'privateKey' => 'xxxxxx'
+        'liqpay' => [
+            'class' => dicr\liqpay\LiqPayModule::class,
+            'publicKey' => 'xxxxx',
+            'privateKey' => 'xxxxx',
+            'debug' => true
+        ]
     ]
 ]);
