@@ -41,20 +41,20 @@ class CheckoutRequest extends Model implements LiqPay
     /** @var string тип операции (required) */
     public $action = self::ACTION_PAY;
 
-    /** @var string язык интерфейса (optional) */
+    /** @var ?string язык интерфейса (optional) */
     public $language = self::LANGUAGE_RU;
 
-    /** @var string адрес страницы для отправки результата (optional) */
+    /** @var ?string адрес страницы для отправки результата (optional) */
     public $callbackUrl;
 
-    /** @var string адрес для перенаправления клиента обратно (optional) */
+    /** @var ?string адрес для перенаправления клиента обратно (optional) */
     public $returnUrl;
 
     /** @var float сумма платежа (required) */
     public $amount;
 
     /** @var string валюта (required) */
-    public $currency;
+    public $currency = self::CURRENCY_UAH;
 
     /** @var string назначение платежа (required) */
     public $description;
@@ -108,13 +108,13 @@ class CheckoutRequest extends Model implements LiqPay
     public function rules() : array
     {
         return [
-            ['version', 'default', 'value' => self::VERSION],
+            ['version', 'required'],
             ['version', 'number', 'min' => 1],
 
-            ['action', 'default', 'value' => self::ACTION_PAY],
+            ['action', 'required'],
             ['action', 'in', 'range' => array_keys(self::ACTIONS)],
 
-            ['language', 'default', 'value' => self::LANGUAGE_RU],
+            ['language', 'default'],
             ['language', 'in', 'range' => self::LANGUAGES],
 
             [['callbackUrl', 'returnUrl'], 'default'],

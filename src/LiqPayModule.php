@@ -23,6 +23,8 @@ use function sha1;
 
 /**
  * Модуль LiqPay.
+ *
+ * @link https://www.liqpay.ua/documentation/api/aquiring/
  */
 class LiqPayModule extends Module implements LiqPay
 {
