@@ -1,9 +1,9 @@
 <?php
 /*
- * @copyright 2019-2020 Dicr http://dicr.org
+ * @copyright 2019-2021 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 10.11.20 02:56:28
+ * @version 23.01.21 02:36:24
  */
 
 declare(strict_types = 1);
@@ -80,14 +80,10 @@ class LiqPayModule extends Module implements LiqPay
     public function encodeData(array $data) : string
     {
         // конвертируем значения в строки
-        $data = array_map(static function ($val) : string {
-            return trim((string)$val);
-        }, $data);
+        $data = array_map(static fn($val): string => trim((string)$val), $data);
 
         // фильтруем пустые значения
-        $data = array_filter($data, static function (string $val) : bool {
-            return $val !== '';
-        });
+        $data = array_filter($data, static fn(string $val): bool => $val !== '');
 
         // добавляем ключ
         $data['public_key'] = $this->publicKey;
