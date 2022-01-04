@@ -1,18 +1,18 @@
 <?php
 /*
- * @copyright 2019-2020 Dicr http://dicr.org
+ * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 10.11.20 02:58:45
+ * @version 04.01.22 22:44:53
  */
 
 declare(strict_types = 1);
 namespace dicr\tests;
 
 use dicr\liqpay\LiqPayModule;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Yii;
-use yii\base\Exception;
 
 /**
  * Class CheckoutRequestTest
@@ -24,7 +24,7 @@ class CheckoutRequestTest extends TestCase
      *
      * @return LiqPayModule
      */
-    private static function module() : LiqPayModule
+    private static function module(): LiqPayModule
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Yii::$app->getModule('liqpay');
@@ -33,7 +33,7 @@ class CheckoutRequestTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testSend() : void
+    public function testSend(): void
     {
         $req = self::module()->checkoutRequest([
             'orderId' => 123,

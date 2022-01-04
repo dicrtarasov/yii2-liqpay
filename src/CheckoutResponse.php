@@ -1,9 +1,9 @@
 <?php
 /*
- * @copyright 2019-2020 Dicr http://dicr.org
+ * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 10.11.20 02:35:10
+ * @version 04.01.22 22:45:38
  */
 
 declare(strict_types = 1);
@@ -18,27 +18,27 @@ use yii\base\Model;
  */
 class CheckoutResponse extends Model implements LiqPay
 {
-    /** @var string статус платежа */
-    public $status;
+    /** @var string|null статус платежа */
+    public string|null $status = null;
 
-    /** @var string текст ошибки */
-    public $err_description;
+    /** @var string|null текст ошибки */
+    public ?string $err_description = null;
 
-    /** @var string id заказа магазина */
-    public $order_id;
+    /** @var string|null id заказа магазина */
+    public ?string $order_id = null;
 
     // todo: реализовать остальные
 
     /**
-     * @return string
+     * @inheritDoc
      */
-    public function formName() : string
+    public function formName(): string
     {
         return '';
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function rules() : array
     {

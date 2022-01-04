@@ -1,9 +1,9 @@
 <?php
 /*
- * @copyright 2019-2020 Dicr http://dicr.org
+ * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 10.11.20 02:59:23
+ * @version 04.01.22 22:44:17
  */
 
 declare(strict_types = 1);
@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace dicr\liqpay;
 
 use dicr\validate\ValidateException;
+use JsonException;
 use Throwable;
 use Yii;
 use yii\base\Exception;
@@ -34,57 +35,55 @@ use function stream_context_create;
  */
 class CheckoutRequest extends Model implements LiqPay
 {
-    /** @var LiqPayModule */
-    protected $module;
 
     /** @var float Версия API (required) */
-    public $version = self::VERSION;
+    public float $version = self::VERSION;
 
     /** @var string тип операции (required) */
-    public $action = self::ACTION_PAY;
+    public string $action = self::ACTION_PAY;
 
     /** @var ?string язык интерфейса (optional) */
-    public $language = self::LANGUAGE_RU;
+    public ?string $language = self::LANGUAGE_RU;
 
     /** @var ?string адрес страницы для отправки результата (optional) */
-    public $callbackUrl;
+    public ?string $callbackUrl = null;
 
     /** @var ?string адрес для перенаправления клиента обратно (optional) */
-    public $returnUrl;
+    public ?string $returnUrl = null;
 
-    /** @var float сумма платежа (required) */
-    public $amount;
+    /** @var float|null сумма платежа (required) */
+    public ?float $amount = null;
 
-    /** @var string валюта (required) */
-    public $currency = self::CURRENCY_UAH;
+    /** @var string|null валюта (required) */
+    public ?string $currency = self::CURRENCY_UAH;
 
-    /** @var string назначение платежа (required) */
-    public $description;
+    /** @var string|null назначение платежа (required) */
+    public ?string $description = null;
 
-    /** @var string [255] уникальный ID покупки в магазине (required) */
-    public $orderId;
+    /** @var string|null [255] уникальный ID покупки в магазине (required) */
+    public ?string $orderId = null;
 
-    /** @var string идентификатор покупателя (optional) */
-    public $customerId;
+    /** @var string|null идентификатор покупателя (optional) */
+    public ?string $customerId;
 
     /**
-     * @var string|int время до которого клиент может оплатить счет по UTC. (optional)
+     * @var string|int|null время до которого клиент может оплатить счет по UTC. (optional)
      * Передается в формате YYYY-MM-DD HH:mm:ss
      */
-    public $expiredDate;
+    public string|int|null $expiredDate = null;
 
     /**
-     * @var string[] способы оплаты (optional)
+     * @var string[]|null способы оплаты (optional)
      * Если не задано, то будут использоваться настройки личного кабинета.
      */
-    public $paytypes;
+    public ?array $paytypes = null;
 
     /**
      * @var bool код верификации.
      * Генерируется и возвращается в Callback. Так же сгенерированный код будет передан в транзакции верификации
      * для отображения в выписке по карте клиента. Работает для action= auth
      */
-    public $verifyCode = false;
+    public bool $verifyCode = false;
 
     // @todo реализовать остальные параметры
 
@@ -94,17 +93,17 @@ class CheckoutRequest extends Model implements LiqPay
      * @param LiqPayModule $module
      * @param array $config
      */
-    public function __construct(LiqPayModule $module, $config = [])
-    {
-        $this->module = $module;
-
+    public function __construct(
+        protected LiqPayModule $module,
+        array $config = []
+    ) {
         parent::__construct($config);
     }
 
     /**
      * @inheritDoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             ['version', 'required'],
@@ -153,7 +152,7 @@ class CheckoutRequest extends Model implements LiqPay
      * @return array
      * @throws ValidateException
      */
-    private function values() : array
+    private function values(): array
     {
         if (! $this->validate()) {
             throw new ValidateException($this);
@@ -181,9 +180,9 @@ class CheckoutRequest extends Model implements LiqPay
      * Обработка методом переадресации клиента на страницу оплаты.
      * Статус операции будет отправлен на callbackUrl.
      *
-     * @throws ValidateException
+     * @throws ValidateException|JsonException
      */
-    public function redirect() : void
+    public function redirect(): void
     {
         $data = $this->module->encodeData($this->values());
         $signature = $this->module->signData($data);
@@ -235,8 +234,9 @@ class CheckoutRequest extends Model implements LiqPay
      *
      * @return CheckoutResponse
      * @throws Exception
+     * @throws JsonException
      */
-    public function send() : CheckoutResponse
+    public function send(): CheckoutResponse
     {
         $data = $this->module->encodeData($this->values());
         $signature = $this->module->signData($data);
@@ -267,7 +267,7 @@ class CheckoutRequest extends Model implements LiqPay
             throw new Exception('Ошибка запроса LiqPay');
         }
 
-        $json = json_decode($ret, true);
+        $json = json_decode($ret, true, 512, JSON_THROW_ON_ERROR);
         if (empty($json)) {
             throw new Exception('Некорректный ответ LiqPay: ' . $ret);
         }

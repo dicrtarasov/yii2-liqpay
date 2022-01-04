@@ -1,14 +1,15 @@
 <?php
 /*
- * @copyright 2019-2021 Dicr http://dicr.org
+ * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 23.01.21 02:36:24
+ * @version 04.01.22 22:38:47
  */
 
 declare(strict_types = 1);
 namespace dicr\liqpay;
 
+use JsonException;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module;
@@ -33,20 +34,18 @@ class LiqPayModule extends Module implements LiqPay
     /** @inheritDoc */
     public $controllerNamespace = __NAMESPACE__;
 
-    /** @var string */
-    public $publicKey;
+    public string $publicKey;
 
-    /** @var string */
-    public $privateKey;
+    public string $privateKey;
 
     /** @var array конфиг LiqPayCheckout по-умолчанию */
-    public $checkoutConfig = [];
+    public array $checkoutConfig = [];
 
-    /** @var callable function(CheckoutResponse $response) */
+    /** @var callable|null function(CheckoutResponse $response) */
     public $checkoutHandler;
 
     /** @var bool режим отладки */
-    public $debug;
+    public bool $debug = false;
 
     /**
      * @inheritDoc
@@ -56,12 +55,10 @@ class LiqPayModule extends Module implements LiqPay
     {
         parent::init();
 
-        $this->publicKey = trim((string)$this->publicKey);
         if (empty($this->publicKey)) {
             throw new InvalidConfigException('publicKey');
         }
 
-        $this->privateKey = trim((string)$this->privateKey);
         if (empty($this->privateKey)) {
             throw new InvalidConfigException('privateKey');
         }
@@ -76,6 +73,7 @@ class LiqPayModule extends Module implements LiqPay
      *
      * @param array $data
      * @return string
+     * @throws JsonException
      */
     public function encodeData(array $data) : string
     {
@@ -89,7 +87,7 @@ class LiqPayModule extends Module implements LiqPay
         $data['public_key'] = $this->publicKey;
 
         // кодируем
-        return base64_encode(json_encode($data));
+        return base64_encode(json_encode($data, JSON_THROW_ON_ERROR));
     }
 
     /**
