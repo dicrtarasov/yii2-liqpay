@@ -3,13 +3,12 @@
  * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 17.01.22 05:13:09
+ * @version 17.01.22 23:32:06
  */
 
 declare(strict_types=1);
 namespace dicr\liqpay;
 
-use Closure;
 use JsonException;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -42,8 +41,8 @@ class LiqPayModule extends Module implements LiqPay
     /** конфиг LiqPayCheckout по-умолчанию */
     public array $checkoutConfig = [];
 
-    /** function(CheckoutResponse $response) */
-    public Closure $checkoutHandler;
+    /** @var callable function(CheckoutResponse $response) */
+    public $checkoutHandler;
 
     /** режим отладки */
     public bool $debug = false;
