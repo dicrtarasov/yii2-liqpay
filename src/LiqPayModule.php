@@ -3,12 +3,13 @@
  * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 04.01.22 22:38:47
+ * @version 17.01.22 05:13:09
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace dicr\liqpay;
 
+use Closure;
 use JsonException;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -38,20 +39,20 @@ class LiqPayModule extends Module implements LiqPay
 
     public string $privateKey;
 
-    /** @var array конфиг LiqPayCheckout по-умолчанию */
+    /** конфиг LiqPayCheckout по-умолчанию */
     public array $checkoutConfig = [];
 
-    /** @var callable|null function(CheckoutResponse $response) */
-    public $checkoutHandler;
+    /** function(CheckoutResponse $response) */
+    public Closure $checkoutHandler;
 
-    /** @var bool режим отладки */
+    /** режим отладки */
     public bool $debug = false;
 
     /**
      * @inheritDoc
      * @throws InvalidConfigException
      */
-    public function init() : void
+    public function init(): void
     {
         parent::init();
 
@@ -71,11 +72,9 @@ class LiqPayModule extends Module implements LiqPay
     /**
      * Кодирует данные.
      *
-     * @param array $data
-     * @return string
      * @throws JsonException
      */
-    public function encodeData(array $data) : string
+    public function encodeData(array $data): string
     {
         // конвертируем значения в строки
         $data = array_map(static fn($val): string => trim((string)$val), $data);
@@ -93,22 +92,17 @@ class LiqPayModule extends Module implements LiqPay
     /**
      * Генерирует подпись данных.
      *
-     * @param string $data
-     * @return string
      * @link https://www.liqpay.ua/documentation/data_signature
      */
-    public function signData(string $data) : string
+    public function signData(string $data): string
     {
         return base64_encode(sha1($this->privateKey . $data . $this->privateKey, true));
     }
 
     /**
      * Создает запрос Checkout.
-     *
-     * @param array $config
-     * @return CheckoutRequest
      */
-    public function checkoutRequest(array $config = []) : CheckoutRequest
+    public function checkoutRequest(array $config = []): CheckoutRequest
     {
         return new CheckoutRequest($this, array_merge([
             'callbackUrl' => Yii::$app instanceof Application ?

@@ -1,12 +1,12 @@
 <?php
 /*
- * @copyright 2019-2020 Dicr http://dicr.org
+ * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 10.11.20 02:35:10
+ * @version 17.01.22 05:11:59
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace dicr\liqpay;
 
 /**
@@ -14,73 +14,73 @@ namespace dicr\liqpay;
  */
 interface LiqPay
 {
-    /** @var int версия API */
+    /** версия API */
     public const VERSION = 3;
 
-    /** @var string валюта доллары */
+    /** валюта доллары */
     public const CURRENCY_USD = 'USD';
 
-    /** @var string валюта евро */
+    /** валюта евро */
     public const CURRENCY_EUR = 'EUR';
 
-    /** @var string валюта рубли */
+    /** валюта рубли */
     public const CURRENCY_RUB = 'RUB';
 
-    /** @var string валюта гривны */
+    /** валюта гривны */
     public const CURRENCY_UAH = 'UAH';
 
-    /** @var string валюта белорусский рубль */
+    /** валюта белорусский рубль */
     public const CURRENCY_BYN = 'BYN';
 
-    /** @var string валюта казахстанский тенге */
+    /** валюта казахстанский тенге */
     public const CURRENCY_KZT = 'KZT';
 
-    /** @var string[] валюты */
+    /** валюты */
     public const CURRENCIES = [
         self::CURRENCY_USD, self::CURRENCY_EUR,
         self::CURRENCY_RUB, self::CURRENCY_UAH,
         self::CURRENCY_BYN, self::CURRENCY_KZT
     ];
 
-    /** @var string язык интерфейса: русский */
+    /** язык интерфейса: русский */
     public const LANGUAGE_RU = 'ru';
 
-    /** @var string язык интерфейса: английский */
+    /** язык интерфейса: английский */
     public const LANGUAGE_EN = 'en';
 
-    /** @var string язык UK */
+    /** язык UK */
     public const LANGUAGE_UK = 'uk';
 
-    /** @var string[] языки интерфейса */
+    /** языки интерфейса */
     public const LANGUAGES = [
         self::LANGUAGE_RU, self::LANGUAGE_EN, self::LANGUAGE_UK
     ];
 
-    /** @var string оплата картой */
+    /** оплата картой */
     public const PAYTYPE_CARD = 'card';
 
-    /** @var string оплата через кабинет liqpay */
+    /** оплата через кабинет liqpay */
     public const PAYTYPE_LIQPAY = 'liqpay';
 
-    /** @var string оплата через Приват24 */
+    /** оплата через Приват24 */
     public const PAYTYPE_PRIVAT24 = 'privat24';
 
-    /** @var string оплата через кабинет masterpass */
+    /** оплата через кабинет masterpass */
     public const PAYTYPE_MASTERPASS = 'masterpass';
 
-    /** @var string рассрочка */
+    /** рассрочка */
     public const PAYTYPE_MOMENTPART = 'moment_part';
 
-    /** @var string наличными */
+    /** наличными */
     public const PAYTYPE_CASH = 'cash';
 
-    /** @var string счет на e-mail */
+    /** счет на e-mail */
     public const PAYTYPE_INVOICE = 'invoice';
 
-    /** @var string сканирование QR_CODE */
+    /** сканирование QR_CODE */
     public const PAYTYPE_QR = 'qr';
 
-    /** @var string[] способы оплаты */
+    /** способы оплаты */
     public const PAYTYPES = [
         self::PAYTYPE_CASH => 'наличными',
         self::PAYTYPE_CARD => 'картой',
@@ -92,25 +92,25 @@ interface LiqPay
         self::PAYTYPE_QR => 'сканирование QR-кода'
     ];
 
-    /** @var string тип операции: платеж */
+    /** тип операции: платеж */
     public const ACTION_PAY = 'pay';
 
-    /** @var string тип операции: блокировка средств на счету отправителя */
+    /** тип операции: блокировка средств на счету отправителя */
     public const ACTION_HOLD = 'hold';
 
-    /** @var string тип операции: регулярный платеж */
+    /** тип операции: регулярный платеж */
     public const ACTION_SUBSCRIBE = 'subscribe';
 
-    /** @var string тип операции: пожертвование */
+    /** тип операции: пожертвование */
     public const ACTION_PAYDONATE = 'paydonate';
 
-    /** @var string тип операции: пред-авторизация карты */
+    /** тип операции: пред-авторизация карты */
     public const ACTION_AUTH = 'auth';
 
-    /** @var string регулярный платеж. Приходит только в callback-запросе. */
+    /** регулярный платеж. Приходит только в callback-запросе. */
     public const ACTION_REGULAR = 'regular';
 
-    /** @var string[] типы операций */
+    /** типы операций */
     public const ACTIONS = [
         self::ACTION_PAY => 'платеж',
         self::ACTION_HOLD => 'удержание средств',
@@ -120,25 +120,25 @@ interface LiqPay
         self::ACTION_REGULAR => 'регулярный платеж'
     ];
 
-    /** @var string URL API для запросов методом Server-Server */
+    /** URL API для запросов методом Server-Server */
     public const URL_CHECKOUT_API = 'https://www.liqpay.ua/api/request';
 
-    /** @var string URL страницы переадресации для метода Client-Server */
+    /** URL страницы переадресации для метода Client-Server */
     public const URL_CHECKOUT_CLIENT = 'https://www.liqpay.ua/api/3/checkout';
 
-    /** @var string успешный платеж */
+    /** успешный платеж */
     public const STATUS_SUCCESS = 'success';
 
-    /** @var string Неуспешный платеж. Некорректно заполнены данные */
+    /** Неуспешный платеж. Некорректно заполнены данные */
     public const STATUS_ERROR = 'error';
 
-    /** @var string Неуспешный платеж */
+    /** Неуспешный платеж */
     public const STATUS_FAILURE = 'failure';
 
-    /** @var string Платеж возвращен */
+    /** Платеж возвращен */
     public const STATUS_REVERSED = 'reversed';
 
-    /** @var string Тестовый платеж */
+    /** Тестовый платеж */
     public const STATUS_SANDBOX = 'sandbox';
 
     // todo: остальные статусы: https://www.liqpay.ua/documentation/api/callback

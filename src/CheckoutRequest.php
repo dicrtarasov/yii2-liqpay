@@ -3,10 +3,10 @@
  * @copyright 2019-2022 Dicr http://dicr.org
  * @author Igor A Tarasov <develop@dicr.org>
  * @license MIT
- * @version 04.01.22 22:44:17
+ * @version 17.01.22 05:08:33
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace dicr\liqpay;
 
@@ -35,42 +35,41 @@ use function stream_context_create;
  */
 class CheckoutRequest extends Model implements LiqPay
 {
-
-    /** @var float Версия API (required) */
+    /** Версия API (required) */
     public float $version = self::VERSION;
 
-    /** @var string тип операции (required) */
+    /** тип операции (required) */
     public string $action = self::ACTION_PAY;
 
-    /** @var ?string язык интерфейса (optional) */
+    /** язык интерфейса (optional) */
     public ?string $language = self::LANGUAGE_RU;
 
-    /** @var ?string адрес страницы для отправки результата (optional) */
+    /** адрес страницы для отправки результата (optional) */
     public ?string $callbackUrl = null;
 
-    /** @var ?string адрес для перенаправления клиента обратно (optional) */
+    /** адрес для перенаправления клиента обратно (optional) */
     public ?string $returnUrl = null;
 
-    /** @var float|null сумма платежа (required) */
+    /** сумма платежа (required) */
     public ?float $amount = null;
 
-    /** @var string|null валюта (required) */
+    /** валюта (required) */
     public ?string $currency = self::CURRENCY_UAH;
 
-    /** @var string|null назначение платежа (required) */
+    /** назначение платежа (required) */
     public ?string $description = null;
 
-    /** @var string|null [255] уникальный ID покупки в магазине (required) */
-    public ?string $orderId = null;
+    /** уникальный ID покупки в магазине (required) */
+    public string|int|null $orderId = null;
 
-    /** @var string|null идентификатор покупателя (optional) */
-    public ?string $customerId;
+    /** идентификатор покупателя (optional) */
+    public string|int|null $customerId = null;
 
     /**
-     * @var string|int|null время до которого клиент может оплатить счет по UTC. (optional)
+     * время до которого клиент может оплатить счет по UTC. (optional)
      * Передается в формате YYYY-MM-DD HH:mm:ss
      */
-    public string|int|null $expiredDate = null;
+    public string|null $expiredDate = null;
 
     /**
      * @var string[]|null способы оплаты (optional)
@@ -79,11 +78,11 @@ class CheckoutRequest extends Model implements LiqPay
     public ?array $paytypes = null;
 
     /**
-     * @var bool код верификации.
+     * код верификации.
      * Генерируется и возвращается в Callback. Так же сгенерированный код будет передан в транзакции верификации
      * для отображения в выписке по карте клиента. Работает для action= auth
      */
-    public bool $verifyCode = false;
+    public ?bool $verifyCode = false;
 
     // @todo реализовать остальные параметры
 
@@ -149,7 +148,6 @@ class CheckoutRequest extends Model implements LiqPay
     /**
      * Возвращает данные.
      *
-     * @return array
      * @throws ValidateException
      */
     private function values(): array
@@ -232,7 +230,6 @@ class CheckoutRequest extends Model implements LiqPay
     /**
      * Отправляет запрос к API.
      *
-     * @return CheckoutResponse
      * @throws Exception
      * @throws JsonException
      */
